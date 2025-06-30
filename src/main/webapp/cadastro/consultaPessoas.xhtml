@@ -46,6 +46,12 @@
                                 </h:outputText>
                             </p:column>
 
+                            <p:column headerText="Data de Cadastro:" style="width:12%;">
+                                <h:outputText value="#{p.dataCadastro}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                </h:outputText>
+                            </p:column>
+
                             <p:column headerText="CPF / CNPJ" style="width:17%;">
                                 <h:outputText value="#{not empty p.numeroCPF ? p.numeroCPF : p.numeroCNPJ}" />
                             </p:column>

@@ -39,6 +39,10 @@
                     <p:calendar id="data" value="#{cadastroBean.cadastrarPessoa.data}"
                                 pattern="dd/MM/yyyy" showIcon="true" />
 
+                    <p:outputLabel for="dataCadastro" value="Data de Cadastro:" styleClass="label" />
+                    <p:calendar id="dataCadastro" value="#{cadastroPessoaBean.cadastrarPessoa.dataCadastro}"
+                                pattern="dd/MM/yyyy" showIcon="true" />
+
                     <p:outputLabel for="tipo" value="Tipo de Documento:" styleClass="label" />
                     <p:selectOneMenu id="tipo" value="#{cadastroBean.cadastrarPessoa.tipoDocumento}"
                                      style="width:100%;">
