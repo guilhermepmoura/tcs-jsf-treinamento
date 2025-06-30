@@ -22,3 +22,17 @@ input,
 .ui-calendar input {
   width: calc(100% - 30px); /* espaço pro botão de calendário */
 }
+.ui-menubar {
+  font-size: 16px;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+}
+
+.ui-menuitem-link {
+  color: #333 !important;
+  transition: color 0.3s ease;
+}
+
+.ui-menuitem-link:hover {
+  color: #007ad9 !important;
+}

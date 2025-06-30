@@ -11,41 +11,57 @@
 
     <ui:define name="content">
         <h:form>
-            <div style="width:100%; text-align:center; margin-top:100px;">
-                <h:outputText value="Treinamento JSF"
-                              style="font-size:36px; font-weight:bold; display:block; margin-bottom:20px;" />
-                <p:commandButton value="PopUp"
-                                 onclick="PF('popupDialog').show(); return false;"
-                                 icon="pi pi-comment" />
-                <br/>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 70vh; gap: 2rem;">
+
+                <!-- Título principal -->
+                <h:outputText value="🚀 Treinamento JSF"
+                              style="font-size: 40px; font-weight: bold; color: #2c3e50;" />
+
+                <!-- Botão PopUp -->
+                <p:commandButton value="Abrir Pop-Up"
+                                 icon="pi pi-comment"
+                                 styleClass="ui-button-info ui-button-raised"
+                                 onclick="PF('popupDialog').show(); return false;" />
+
+                <!-- Texto de boas-vindas (condicional) -->
                 <h:panelGroup id="saidaTexto">
-                    <h:outputText value="#{popupBean.mensagemBoasVindas}" style="font-size:20px; font-weight: bold; color:blue;" rendered="#{not empty popupBean.mensagemBoasVindas}" />
+                    <h:outputText value="#{popupBean.mensagemBoasVindas}"
+                                  rendered="#{not empty popupBean.mensagemBoasVindas}"
+                                  style="font-size: 20px; color: #2980b9; font-weight: 600;" />
                 </h:panelGroup>
 
-                <p:dialog header="Digite seu nome" widgetVar="popupDialog"
-                          modal="true" closable="false" resizable="false">
-
-                <p:inputText value="#{popupBean.textoDigitado}" style="width:100%;" />
-                <br/>
-                    <f:facet name="footer">
-                        <p:commandButton value="OK"
-                                         icon="pi pi-check"
-                                         update="saidaTexto"
-                                         oncomplete="PF('popupDialog').hide();ss"
-                                         process="@form"
-                        action="#{popupBean.salvar}" />
-
-                        <p:commandButton value="Cancelar"
-                                         icon="pi pi-times"
-                                         onclick="PF('popupDialog').hide(); return false;"
-                                         type="button"
-                                         styleClass="ui-button-secondary" />
-                    </f:facet>
-                </p:dialog>
-                <br/>
-                <h:outputText value="Use o menu acima para navegar pelas telas e tenha um bom treinamento."
-                              style="font-size:22px;" />
+                <!-- Instrução -->
+                <h:outputText value="Use o menu acima para navegar pelas telas e tenha um bom treinamento!"
+                              style="font-size: 18px; color: #555;" />
             </div>
+
+            <!-- Diálogo PopUp -->
+            <p:dialog header="Digite seu nome"
+                      widgetVar="popupDialog"
+                      modal="true"
+                      closable="false"
+                      resizable="false"
+                      styleClass="ui-dialog-rounded">
+
+                <p:inputText value="#{popupBean.textoDigitado}"
+                             style="width:100%; margin-bottom:1rem;" />
+
+                <f:facet name="footer">
+                    <p:commandButton value="OK"
+                                     icon="pi pi-check"
+                                     update="saidaTexto"
+                                     oncomplete="PF('popupDialog').hide();"
+                                     process="@form"
+                                     action="#{popupBean.salvar}"
+                                     styleClass="ui-button-success" />
+
+                    <p:commandButton value="Cancelar"
+                                     icon="pi pi-times"
+                                     onclick="PF('popupDialog').hide(); return false;"
+                                     type="button"
+                                     styleClass="ui-button-secondary" />
+                </f:facet>
+            </p:dialog>
         </h:form>
     </ui:define>
 

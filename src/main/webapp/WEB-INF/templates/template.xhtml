@@ -11,11 +11,12 @@
 <h:body>
     <h:form id="menuForm">
     <!-- Menu -->
-    <p:menubar>
-        <p:menuitem value="Home" url="#{request.contextPath}/home.xhtml" icon="pi pi-home" />
-        <p:menuitem value="Cadastro" url="#{request.contextPath}/cadastro/cadastro.xhtml" />
-        <p:menuitem value="Consulta" url="#{request.contextPath}/cadastro/consultaPessoas.xhtml" />
-    </p:menubar>
+        <p:menubar style="background-color:#f8f9fa; border-radius: 0 0 8px 8px; box-shadow: 0px 2px 4px rgba(0,0,0,0.05);">
+            <p:menuitem value="Home" url="#{request.contextPath}/home.xhtml" icon="pi pi-home" />
+            <p:menuitem value="Cadastro" url="#{request.contextPath}/cadastro/cadastro.xhtml" icon="pi pi-user-plus" />
+            <p:menuitem value="Consulta" url="#{request.contextPath}/cadastro/consultaPessoas.xhtml" icon="pi pi-search" />
+
+        </p:menubar>
     </h:form>
 
     <!-- Conteúdo -->
