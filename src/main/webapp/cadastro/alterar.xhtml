@@ -49,29 +49,33 @@
                         <f:selectItem itemLabel="Selecione" itemValue="" noSelectionOption="true" />
                         <f:selectItem itemLabel="CPF" itemValue="CPF" />
                         <f:selectItem itemLabel="CNPJ" itemValue="CNPJ" />
+                        <f:selectItem itemLabel="CNPJ e CPF" itemValue="CNPJeCPF" />
                         <p:ajax update="docPanel" process="@this" />
                     </p:selectOneMenu>
 
                     <!-- Bloco para CPF / CNPJ -->
                     <h:panelGroup id="docPanel" layout="block">
-                        <!-- Campo CPF: exibido se o tipo for CPF -->
+                        <!-- Campo CPF: exibido se o tipo for CPF ou CNPJeCPF -->
                         <p:outputLabel for="cpf" value="CPF:" styleClass="label"
-                                       style="#{consultaPessoaBean.pessoaSelecionada.tipoDocumento eq 'CPF' ? '' : 'display:none;'}" />
-                        <p:inputMask id="cpf" value="#{consultaPessoaBean.pessoaSelecionada.numeroCPF}"
+                                       rendered="#{consultaPessoaBean.pessoaSelecionada.tipoDocumento eq 'CPF' or consultaPessoaBean.pessoaSelecionada.tipoDocumento eq 'CNPJeCPF'}" />
+                        <p:inputMask id="cpf" value="#{cadastroBean.cadastrarPessoa.numeroCPF}"
                                      mask="999.999.999-99"
                                      autoClear="true" unmask="true"
-                                     disabled="#{consultaPessoaBean.pessoaSelecionada.tipoDocumento ne 'CPF'}"
-                                     style="width:100%; #{consultaPessoaBean.pessoaSelecionada.tipoDocumento eq 'CPF' ? '' : 'display:none;'}" />
+                                     rendered="#{consultaPessoaBean.pessoaSelecionada.tipoDocumento eq 'CPF' or consultaPessoaBean.pessoaSelecionada.tipoDocumento eq 'CNPJeCPF'}"
+                                     disabled="false"
+                                     style="width:100%;" />
 
-                        <!-- Campo CNPJ: exibido se o tipo for CNPJ -->
+                        <!-- Campo CNPJ: exibido se o tipo for CNPJ ou CNPJeCPF -->
                         <p:outputLabel for="cnpj" value="CNPJ:" styleClass="label"
-                                       style="#{consultaPessoaBean.pessoaSelecionada.tipoDocumento eq 'CNPJ' ? '' : 'display:none;'}" />
-                        <p:inputMask id="cnpj" value="#{consultaPessoaBean.pessoaSelecionada.numeroCNPJ}"
+                                       rendered="#{consultaPessoaBean.pessoaSelecionada.tipoDocumento eq 'CNPJ' or consultaPessoaBean.pessoaSelecionada.tipoDocumento eq 'CNPJeCPF'}" />
+                        <p:inputMask id="cnpj" value="#{cadastroBean.cadastrarPessoa.numeroCNPJ}"
                                      mask="99.999.999/9999-99"
                                      autoClear="true" unmask="true"
-                                     disabled="#{consultaPessoaBean.pessoaSelecionada.tipoDocumento ne 'CNPJ'}"
-                                     style="width:100%; #{consultaPessoaBean.pessoaSelecionada.tipoDocumento eq 'CNPJ' ? '' : 'display:none;'}" />
+                                     rendered="#{consultaPessoaBean.pessoaSelecionada.tipoDocumento eq 'CNPJ' or consultaPessoaBean.pessoaSelecionada.tipoDocumento eq 'CNPJeCPF'}"
+                                     disabled="false"
+                                     style="width:100%;" />
                     </h:panelGroup>
+
                 </p:panelGrid>
 
                 <p:separator/>
