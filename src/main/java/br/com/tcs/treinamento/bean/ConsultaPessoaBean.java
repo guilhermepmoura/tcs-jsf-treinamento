@@ -6,6 +6,7 @@ import br.com.tcs.treinamento.service.impl.PessoaServiceImpl;
 import org.primefaces.PrimeFaces;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -132,7 +133,28 @@ public class ConsultaPessoaBean implements Serializable {
             return;
         }
     }
-
+    public void excluirSelecionados() {
+        if (pessoasSelecionadas != null && !pessoasSelecionadas.isEmpty()) {
+            try {
+                for (Pessoa pessoa : pessoasSelecionadas) {
+                    // Para exclusão lógica, setamos 'ativo' para false
+                    pessoa.setAtivo(false);
+                    pessoa.setDataManutencao(new Date()); // Opcional: registrar data da "exclusão"
+                    pessoaService.atualizar(pessoa); // Atualiza o status da pessoa para inativo
+                }
+                pessoasSelecionadas.clear(); // Limpa a lista de selecionados no bean
+                pessoas = pessoaService.listar(); // Recarrega a lista principal para atualizar a tabela na UI
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Pessoas selecionadas excluídas logicamente com sucesso!"));
+            } catch (Exception e) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao excluir pessoas: " + e.getMessage()));
+            }
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", "Nenhuma pessoa selecionada para exclusão."));
+        }
+    }
     public void validarCampos() {
         List<String> erros = new ArrayList<>();
 
@@ -176,10 +198,14 @@ public class ConsultaPessoaBean implements Serializable {
     }
     public List<Pessoa> getPessoasFiltradas() {
         if (filtroNome == null || filtroNome.isEmpty()) {
-            return pessoas;
+            // Retorna apenas as pessoas ativas se não houver filtro de nome
+            return pessoas.stream()
+                    .filter(Pessoa::getAtivo)
+                    .collect(Collectors.toList());
         }
+        // Retorna as pessoas ativas que correspondem ao filtro de nome
         return pessoas.stream()
-                .filter(p -> p.getNome().toLowerCase().contains(filtroNome.toLowerCase()))
+                .filter(p -> p.getAtivo() && p.getNome().toLowerCase().contains(filtroNome.toLowerCase()))
                 .collect(Collectors.toList());
     }
 
