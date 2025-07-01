@@ -3,6 +3,11 @@ package br.com.tcs.treinamento.bean;
 import br.com.tcs.treinamento.entity.Pessoa;
 import br.com.tcs.treinamento.service.PessoaService;
 import br.com.tcs.treinamento.service.impl.PessoaServiceImpl;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.PrimeFaces;
 
 import javax.annotation.PostConstruct;
@@ -10,12 +15,22 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.DocumentException;
 
 @ManagedBean(name = "consultaPessoaBean")
 @ViewScoped
@@ -210,11 +225,98 @@ public class ConsultaPessoaBean implements Serializable {
     }
 
     public void exportarPdf() {
-        System.out.println("Implementar metodo para PDF");
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+
+        try {
+            Document document = new Document(PageSize.A4);
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=\"Pessoas.pdf\"");
+            PdfWriter.getInstance(document, response.getOutputStream());
+            document.open();
+
+            document.add(new Paragraph("Lista de Pessoas"));
+            document.add(new Paragraph(" "));
+
+            PdfPTable table = new PdfPTable(8); // 8 colunas como no Excel
+            table.setWidthPercentage(100);
+
+            // Adiciona cabeçalhos
+            table.addCell("ID");
+            table.addCell("Nome");
+            table.addCell("Idade");
+            table.addCell("Email");
+            table.addCell("Data Nasc.");
+            table.addCell("Data Cadastro");
+            table.addCell("CPF/CNPJ");
+            table.addCell("Status");
+
+            // Popula a tabela com dados
+            for (Pessoa p : getPessoasFiltradas()) {
+                table.addCell(String.valueOf(p.getId()));
+                table.addCell(p.getNome());
+                table.addCell(String.valueOf(p.getIdade() != null ? p.getIdade() : ""));
+                table.addCell(p.getEmail());
+                table.addCell(p.getData() != null ? new java.text.SimpleDateFormat("dd/MM/yyyy").format(p.getData()) : "");
+                table.addCell(p.getDataCadastro() != null ? new java.text.SimpleDateFormat("dd/MM/yyyy").format(p.getDataCadastro()) : "");
+                table.addCell(p.getTipoDocumento().equals("CPF") ? p.getNumeroCPF() : p.getNumeroCNPJ());
+                table.addCell(p.getAtivo() ? "Ativo" : "Inativo");
+            }
+            document.add(table);
+            document.close();
+            facesContext.responseComplete();
+
+        } catch (DocumentException | IOException e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao exportar PDF: " + e.getMessage()));
+            e.printStackTrace();
+        }
     }
 
     public void exportarExcel() {
-        System.out.println("Implementar metodo para Excel");
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+
+        try (Workbook workbook = new XSSFWorkbook(); // Para formato .xlsx
+             ServletOutputStream out = response.getOutputStream()) {
+
+            Sheet sheet = workbook.createSheet("Pessoas");
+
+            Row headerRow = sheet.createRow(0);
+            String[] headers = {"ID", "Nome", "Idade", "Email", "Data Nasc.", "Data Cadastro", "CPF/CNPJ", "Status"};
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+            }
+
+            int rowNum = 1;
+            for (Pessoa p : getPessoasFiltradas()) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(p.getId());
+                row.createCell(1).setCellValue(p.getNome());
+                row.createCell(2).setCellValue(p.getIdade() != null ? p.getIdade() : 0);
+                row.createCell(3).setCellValue(p.getEmail());
+                row.createCell(4).setCellValue(p.getData() != null ? new java.text.SimpleDateFormat("dd/MM/yyyy").format(p.getData()) : "");
+                row.createCell(5).setCellValue(p.getDataCadastro() != null ? new java.text.SimpleDateFormat("dd/MM/yyyy").format(p.getDataCadastro()) : "");
+                row.createCell(6).setCellValue(p.getTipoDocumento().equals("CPF") ? p.getNumeroCPF() : p.getNumeroCNPJ());
+                row.createCell(7).setCellValue(p.getAtivo() ? "Ativo" : "Inativo");
+            }
+
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setHeader("Content-Disposition", "attachment; filename=\"Pessoas.xlsx\"");
+
+            workbook.write(out);
+            facesContext.responseComplete(); // Finaliza a resposta do JSF
+
+        } catch (IOException e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao exportar Excel: " + e.getMessage()));
+            e.printStackTrace();
+        }
     }
 
     public List<Pessoa> getPessoas() {

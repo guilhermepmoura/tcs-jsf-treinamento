@@ -110,11 +110,13 @@
                                                  action="#{consultaPessoaBean.exportarPdf}"
                                                  icon="pi pi-file-pdf"
                                                  styleClass="ui-button-secondary"
-                                                 style="margin-right:10px;" />
+                                                 style="margin-right:10px;"
+                                                 ajax="false" />
                                 <p:commandButton value="Exportar Excel"
-                                                 action="#{consultaPessoaBean.exportarExcel}"
-                                                 icon="pi pi-file-excel"
-                                                 styleClass="ui-button-secondary" />
+                                              action="#{consultaPessoaBean.exportarExcel}"
+                                              icon="pi pi-file-excel"
+                                              styleClass="ui-button-secondary"
+                                              ajax="false" />
                             </div>
 
                         </div>
