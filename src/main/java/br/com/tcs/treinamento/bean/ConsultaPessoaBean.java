@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @ManagedBean(name = "consultaPessoaBean")
 @ViewScoped
@@ -24,6 +25,9 @@ public class ConsultaPessoaBean implements Serializable {
     private String errorMessage;
     private Long pessoaId;
     private Boolean tpManutencao;
+    private String filtroNome;
+    private List<Pessoa> pessoasSelecionadas;
+
 
     private transient PessoaService pessoaService = new PessoaServiceImpl();
 
@@ -170,6 +174,14 @@ public class ConsultaPessoaBean implements Serializable {
             PrimeFaces.current().executeScript("PF('confirmDialog').show();");
         }
     }
+    public List<Pessoa> getPessoasFiltradas() {
+        if (filtroNome == null || filtroNome.isEmpty()) {
+            return pessoas;
+        }
+        return pessoas.stream()
+                .filter(p -> p.getNome().toLowerCase().contains(filtroNome.toLowerCase()))
+                .collect(Collectors.toList());
+    }
 
     public void exportarPdf() {
         System.out.println("Implementar metodo para PDF");
@@ -225,5 +237,19 @@ public class ConsultaPessoaBean implements Serializable {
 
     public void setTpManutencao(Boolean tpManutencao) {
         this.tpManutencao = tpManutencao;
+    }
+    public String getFiltroNome() {
+        return filtroNome;
+    }
+
+    public void setFiltroNome(String filtroNome) {
+        this.filtroNome = filtroNome;
+    }
+
+    public List<Pessoa> getPessoasSelecionadas() {
+        return pessoasSelecionadas;
+    }
+    public void setPessoasSelecionadas(List<Pessoa> pessoasSelecionadas) {
+        this.pessoasSelecionadas = pessoasSelecionadas;
     }
 }

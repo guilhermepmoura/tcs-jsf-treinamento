@@ -16,18 +16,27 @@
 
                 <div style="width:100%;">
                     <div style="transform: scale(0.9); transform-origin: top left; width:100%;">
-                        <p:dataTable value="#{consultaPessoaBean.pessoas}"
+
+                        <p:outputLabel for="filtroNome" value="Filtrar por Nome:" />
+                        <p:inputText id="filtroNome" value="#{consultaPessoaBean.filtroNome}" >
+                            <p:ajax event="keyup" update="tabelaPessoas" />
+                        </p:inputText>
+
+                        <br/><br/>
+
+                        <p:dataTable id="tabelaPessoas"
+                                     value="#{consultaPessoaBean.pessoasFiltradas}"
                                      var="p"
+                                     selection="#{consultaPessoaBean.pessoasSelecionadas}"
                                      paginator="true"
-                                     paginatorPosition="bottom"
                                      rows="7"
-                                     autoLayout="true"
+                                     rowKey="#{p.id}"
+                                     selectionMode="multiple"
                                      responsiveLayout="scroll"
                                      emptyMessage="Nenhuma pessoa cadastrada."
-                                     rowKey="#{p.id}"
-                                     styleClass="ui-datatable-striped ui-datatable-hover"
-                                     style="width:100%; table-layout:auto;">
+                                     style="width:100%;">
 
+                            <p:column selectionMode="multiple" style="width:3%;"/>
                             <p:column headerText="Nome" style="width:25%;">
                                 #{p.nome}
                             </p:column>
