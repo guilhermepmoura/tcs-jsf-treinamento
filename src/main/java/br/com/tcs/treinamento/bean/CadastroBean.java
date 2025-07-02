@@ -71,6 +71,16 @@ public class CadastroBean implements Serializable {
     }
 
     public void validarCampos() {
+
+        if (cadastrarPessoa.getNumeroCPF() != null && !cadastrarPessoa.getNumeroCPF().isEmpty()) {
+            String cpfSemMascara = cadastrarPessoa.getNumeroCPF().replaceAll("[^\\d]", "");
+            cadastrarPessoa.setNumeroCPF(cpfSemMascara);
+        }
+        if (cadastrarPessoa.getNumeroCNPJ() != null && !cadastrarPessoa.getNumeroCNPJ().isEmpty()) {
+            String cnpjSemMascara = cadastrarPessoa.getNumeroCNPJ().replaceAll("[^\\d]", "");
+            cadastrarPessoa.setNumeroCNPJ(cnpjSemMascara);
+        }
+
         List<String> erros = new ArrayList<>();
 
         if (cadastrarPessoa.getNome() == null || cadastrarPessoa.getNome().trim().isEmpty()) {
@@ -91,14 +101,15 @@ public class CadastroBean implements Serializable {
         if (cadastrarPessoa.getTipoDocumento() == null || cadastrarPessoa.getTipoDocumento().trim().isEmpty()) {
             erros.add("Tipo de documento não informado.");
         } else {
-            if ("CPF".equals(cadastrarPessoa.getTipoDocumento())) {
-                if (cadastrarPessoa.getNumeroCPF() == null || cadastrarPessoa.getNumeroCPF().trim().isEmpty() ||
-                        cadastrarPessoa.getNumeroCPF().trim().length() < 11) {
+            if (cadastrarPessoa.getTipoDocumento().equals("CPF") || cadastrarPessoa.getTipoDocumento().equals("CNPJeCPF")) {
+                if (cadastrarPessoa.getNumeroCPF() == null || cadastrarPessoa.getNumeroCPF().length() != 11) {
                     erros.add("CPF não informado ou incompleto (deve conter 11 dígitos).");
                 }
-            } else if ("CNPJ".equals(cadastrarPessoa.getTipoDocumento())) {
-                if (cadastrarPessoa.getNumeroCNPJ() == null || cadastrarPessoa.getNumeroCNPJ().trim().isEmpty() ||
-                        cadastrarPessoa.getNumeroCNPJ().trim().length() < 14) {
+            }
+
+            // Verifica se o tipo é CNPJ ou CNPJeCPF
+            if (cadastrarPessoa.getTipoDocumento().equals("CNPJ") || cadastrarPessoa.getTipoDocumento().equals("CNPJeCPF")) {
+                if (cadastrarPessoa.getNumeroCNPJ() == null || cadastrarPessoa.getNumeroCNPJ().length() != 14) {
                     erros.add("CNPJ não informado ou incompleto (deve conter 14 dígitos).");
                 }
             }
