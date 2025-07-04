@@ -72,15 +72,6 @@ public class CadastroBean implements Serializable {
 
     public void validarCampos() {
 
-        if (cadastrarPessoa.getNumeroCPF() != null && !cadastrarPessoa.getNumeroCPF().isEmpty()) {
-            String cpfSemMascara = cadastrarPessoa.getNumeroCPF().replaceAll("[^\\d]", "");
-            cadastrarPessoa.setNumeroCPF(cpfSemMascara);
-        }
-        if (cadastrarPessoa.getNumeroCNPJ() != null && !cadastrarPessoa.getNumeroCNPJ().isEmpty()) {
-            String cnpjSemMascara = cadastrarPessoa.getNumeroCNPJ().replaceAll("[^\\d]", "");
-            cadastrarPessoa.setNumeroCNPJ(cnpjSemMascara);
-        }
-
         List<String> erros = new ArrayList<>();
 
         if (cadastrarPessoa.getNome() == null || cadastrarPessoa.getNome().trim().isEmpty()) {
@@ -102,14 +93,14 @@ public class CadastroBean implements Serializable {
             erros.add("Tipo de documento não informado.");
         } else {
             if (cadastrarPessoa.getTipoDocumento().equals("CPF") || cadastrarPessoa.getTipoDocumento().equals("CNPJeCPF")) {
-                if (cadastrarPessoa.getNumeroCPF() == null || cadastrarPessoa.getNumeroCPF().length() != 11) {
+                if (cadastrarPessoa.getNumeroCPF() == null || cadastrarPessoa.getNumeroCPF().length() != 14) { // (11 dígitos + 3 pontos + 1 traço)
                     erros.add("CPF não informado ou incompleto (deve conter 11 dígitos).");
                 }
             }
 
             // Verifica se o tipo é CNPJ ou CNPJeCPF
             if (cadastrarPessoa.getTipoDocumento().equals("CNPJ") || cadastrarPessoa.getTipoDocumento().equals("CNPJeCPF")) {
-                if (cadastrarPessoa.getNumeroCNPJ() == null || cadastrarPessoa.getNumeroCNPJ().length() != 14) {
+                if (cadastrarPessoa.getNumeroCNPJ() == null || cadastrarPessoa.getNumeroCNPJ().length() != 18) { // (14 dígitos + 2 pontos + 1 barra + 1 traço)
                     erros.add("CNPJ não informado ou incompleto (deve conter 14 dígitos).");
                 }
             }
@@ -146,5 +137,4 @@ public class CadastroBean implements Serializable {
         // Re-inicializa o serviço para evitar que seja nulo ou uma instância não serializável
         this.pessoaService = new PessoaServiceImpl();
     }
-
 }

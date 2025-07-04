@@ -10,6 +10,24 @@
     </ui:define>
 
     <ui:define name="content">
+
+        <script type="text/javascript">
+            function aplicarMascaraInvertida(idCampo, tipo) {
+                var inputElement = document.getElementById(idCampo);
+                if (!inputElement) return;
+
+                var mascara = tipo === 'CPF' ? '999.999.999-99' : '99.999.999/9999-99';
+                Inputmask({
+                    mask: mascara,
+                    numericInput: true,
+                    rightAlign: false,
+                    placeholder: '0',
+                    showMaskOnHover: false,
+                    autoUnmask: false
+                }).mask(inputElement);
+            }
+        </script>
+
         <h:form id="formCadastro">
             <!-- Inclui o modal (confirmarModel.xhtml) para reutilização -->
             <ui:include src="/model/confirmarModel.xhtml" >
@@ -58,22 +76,24 @@
                         <!-- Campo CPF: exibido se o tipo for CPF ou CNPJeCPF -->
                         <p:outputLabel for="cpf" value="CPF:" styleClass="label"
                                        rendered="#{consultaPessoaBean.pessoaSelecionada.tipoDocumento eq 'CPF' or consultaPessoaBean.pessoaSelecionada.tipoDocumento eq 'CNPJeCPF'}" />
-                        <p:inputMask id="cpf" value="#{cadastroBean.cadastrarPessoa.numeroCPF}"
+                        <p:inputText id="cpf" value="#{consultaPessoaBean.pessoaSelecionada.numeroCPF}"
                                      mask="999.999.999-99"
                                      autoClear="true" unmask="true"
                                      rendered="#{consultaPessoaBean.pessoaSelecionada.tipoDocumento eq 'CPF' or consultaPessoaBean.pessoaSelecionada.tipoDocumento eq 'CNPJeCPF'}"
                                      disabled="false"
-                                     style="width:100%;" />
+                                     style="width:100%;"
+                                     onfocus="aplicarMascaraInvertida(this.id, 'CPF')"/>
 
                         <!-- Campo CNPJ: exibido se o tipo for CNPJ ou CNPJeCPF -->
                         <p:outputLabel for="cnpj" value="CNPJ:" styleClass="label"
                                        rendered="#{consultaPessoaBean.pessoaSelecionada.tipoDocumento eq 'CNPJ' or consultaPessoaBean.pessoaSelecionada.tipoDocumento eq 'CNPJeCPF'}" />
-                        <p:inputMask id="cnpj" value="#{cadastroBean.cadastrarPessoa.numeroCNPJ}"
+                        <p:inputText id="cnpj" value="#{consultaPessoaBean.pessoaSelecionada.numeroCNPJ}"
                                      mask="99.999.999/9999-99"
                                      autoClear="true" unmask="true"
                                      rendered="#{consultaPessoaBean.pessoaSelecionada.tipoDocumento eq 'CNPJ' or consultaPessoaBean.pessoaSelecionada.tipoDocumento eq 'CNPJeCPF'}"
                                      disabled="false"
-                                     style="width:100%;" />
+                                     style="width:100%;"
+                                     onfocus="aplicarMascaraInvertida(this.id, 'CNPJ')"/>
                     </h:panelGroup>
 
                 </p:panelGrid>
